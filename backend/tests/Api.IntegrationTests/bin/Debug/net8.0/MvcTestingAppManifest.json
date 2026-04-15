@@ -1,0 +1,6 @@
+{
+  "Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\source\\Claude\\saas-rbac-um\\backend\\src\\Api",
+  "Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\source\\Claude\\saas-rbac-um\\backend\\src\\Application",
+  "Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\source\\Claude\\saas-rbac-um\\backend\\src\\Domain",
+  "Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\source\\Claude\\saas-rbac-um\\backend\\src\\Infrastructure"
+}

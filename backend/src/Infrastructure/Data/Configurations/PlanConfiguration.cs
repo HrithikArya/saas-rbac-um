@@ -1,0 +1,27 @@
+using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Infrastructure.Data.Configurations;
+
+public class PlanConfiguration : IEntityTypeConfiguration<Plan>
+{
+    public void Configure(EntityTypeBuilder<Plan> builder)
+    {
+        builder.HasKey(p => p.Id);
+
+        builder.Property(p => p.Name)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        builder.Property(p => p.FeaturesJson)
+            .IsRequired()
+            .HasDefaultValue("{}");
+
+        builder.HasData(
+            new Plan { Id = Guid.Parse("00000000-0000-0000-0000-000000000001"), Name = "Free",  FeaturesJson = "{\"max_members\":3,\"advanced_reports\":false}" },
+            new Plan { Id = Guid.Parse("00000000-0000-0000-0000-000000000002"), Name = "Pro",   FeaturesJson = "{\"max_members\":20,\"advanced_reports\":true}" },
+            new Plan { Id = Guid.Parse("00000000-0000-0000-0000-000000000003"), Name = "Team",  FeaturesJson = "{\"max_members\":100,\"advanced_reports\":true}" }
+        );
+    }
+}

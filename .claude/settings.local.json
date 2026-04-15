@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmd /c \"mkdir \\\\\"c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Application\\\\Auth\\\\Dtos\\\\\" \\\\\"c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Application\\\\Common\\\\Exceptions\\\\\" \\\\\"c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Application\\\\Common\\\\Interfaces\\\\\" \\\\\"c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Application\\\\Common\\\\Settings\\\\\" \\\\\"c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Infrastructure\\\\Data\\\\Configurations\\\\\" \\\\\"c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Infrastructure\\\\Data\\\\Migrations\\\\\" \\\\\"c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\tests\\\\Api.IntegrationTests\\\\Infrastructure\\\\\" \\\\\"c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\tests\\\\Api.IntegrationTests\\\\Auth\\\\\" \\\\\"c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\tests\\\\Application.UnitTests\\\\Auth\\\\\" 2>nul & echo done\")",
+      "Bash(powershell -Command ':*)"
+    ]
+  }
+}

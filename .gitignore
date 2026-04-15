@@ -1,0 +1,35 @@
+# ── Environment ────────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── .NET / Backend ─────────────────────────────────────────────────────────────
+backend/bin/
+backend/obj/
+backend/**/.vs/
+backend/*.user
+*.suo
+*.ntvs*
+*.njsproj
+*.sln.docstates
+
+# ── Node / Frontend ────────────────────────────────────────────────────────────
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.cache/
+frontend/dist/
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+docker/nginx/certs/
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
