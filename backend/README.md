@@ -16,6 +16,8 @@ ASP.NET Core 8 Web API implementing multi-tenant authentication and role-based a
   - [Organizations](#organization-endpoints)
   - [Members](#member-endpoints)
   - [Invites](#invite-endpoints)
+  - [Billing](#billing-endpoints)
+  - [Webhooks](#webhook-endpoints)
 - [RBAC — Roles & Permissions](#rbac--roles--permissions)
 - [How the Org Context Header Works](#how-the-org-context-header-works)
 - [Token Strategy](#token-strategy)
@@ -111,6 +113,8 @@ All settings live in `src/Api/appsettings.json` (base) and `appsettings.Developm
 | Redis connection | `REDIS_URL` | `ConnectionStrings:Redis` | *(falls back to in-memory)* |
 | Frontend URL (CORS) | `APP_URL` | `App:Url` | `http://localhost:3000` |
 | Seq logging server | `SEQ_URL` | `Seq:ServerUrl` | `http://localhost:5341` |
+| Stripe secret key | `STRIPE_SECRET_KEY` | `Stripe:SecretKey` | *(required for billing)* |
+| Stripe webhook secret | `STRIPE_WEBHOOK_SECRET` | `Stripe:WebhookSecret` | *(required for webhooks)* |
 
 ### JWT settings (config only, not env vars)
 
@@ -479,6 +483,78 @@ Accepts an organization invite. The authenticated user's email must match the in
 
 ---
 
+---
+
+### Billing Endpoints
+
+Both billing endpoints require authentication, a valid `X-Organization-Id` header, and the `billing.manage` permission (Owner role only).
+
+#### `POST /billing/checkout`
+
+Creates a Stripe Checkout session for upgrading the organization's plan. Returns a Stripe-hosted URL — redirect the user there to complete payment.
+
+**Auth required + `billing.manage` permission.**
+
+**Request body:**
+```json
+{ "priceId": "price_1Abc..." }
+```
+
+Get the `priceId` from your Stripe Dashboard (Products → Pricing).
+
+**Response `200`:**
+```json
+{ "url": "https://checkout.stripe.com/c/pay/..." }
+```
+
+**Errors:**
+- `400 Bad Request` — `priceId` missing.
+- `403 Forbidden` — caller is not the Owner.
+- `404 Not Found` — org not found.
+
+---
+
+#### `POST /billing/portal`
+
+Creates a Stripe Customer Portal session so the Owner can manage their subscription (cancel, update payment method, view invoices).
+
+**Auth required + `billing.manage` permission.**
+
+No request body.
+
+**Response `200`:**
+```json
+{ "url": "https://billing.stripe.com/p/session/..." }
+```
+
+**Errors:**
+- `400 Bad Request` — org has no subscription / no Stripe customer yet (must complete checkout first).
+- `403 Forbidden` — caller is not the Owner.
+
+---
+
+### Webhook Endpoints
+
+#### `POST /webhooks/stripe`
+
+Receives Stripe webhook events. **This endpoint is anonymous** — security is enforced via the `Stripe-Signature` header HMAC validation (not JWT).
+
+Configure in Stripe Dashboard → Webhooks → Add endpoint: `https://your-domain.com/webhooks/stripe`
+
+Events handled:
+
+| Event | Effect |
+|-------|--------|
+| `checkout.session.completed` | Activates subscription, links `StripeSubscriptionId` |
+| `customer.subscription.updated` | Syncs status (`Active`/`Trialing`/`PastDue`/`Canceled`) and `CurrentPeriodEnd` |
+| `invoice.payment_failed` | Sets subscription status to `PastDue` |
+
+Unknown events are silently ignored (returns `200 OK`) — idempotent by design.
+
+**Errors:** `400 Bad Request` — invalid signature.
+
+---
+
 ## RBAC — Roles & Permissions
 
 Each user has one role per organization. Roles map to a fixed set of permissions:
@@ -497,6 +573,56 @@ Each user has one role per organization. Roles map to a fixed set of permissions
 - A Viewer has read-only access.
 
 Permissions are checked by `PermissionAuthorizationHandler` using the role stored in `HttpContext.Items` by `OrganizationContextMiddleware`.
+
+---
+
+---
+
+## Feature Gating
+
+`IFeatureGate.IsEnabledAsync(feature, orgId)` checks whether a feature is unlocked by the organization's active plan.
+
+Features are stored as JSON in `Plan.FeaturesJson`:
+
+```json
+// Free plan
+{ "max_members": 3, "advanced_reports": false }
+
+// Pro plan
+{ "max_members": 20, "advanced_reports": true }
+
+// Team plan
+{ "max_members": 100, "advanced_reports": true }
+```
+
+**Rules:**
+- Only `Active` or `Trialing` subscriptions count — `PastDue`, `Canceled`, and `Incomplete` return `false`.
+- If the org has no subscription, returns `false`.
+- Features not present in the JSON return `false`.
+
+**Example usage in a controller:**
+```csharp
+if (!await _featureGate.IsEnabledAsync("advanced_reports", orgId))
+    return StatusCode(403, new { error = "Upgrade to Pro to access advanced reports." });
+```
+
+---
+
+## Stripe Setup
+
+1. Create a Stripe account at [stripe.com](https://stripe.com).
+2. Get your **Secret Key** from Dashboard → Developers → API Keys.
+3. Create Products + Prices for Free/Pro/Team plans. Copy the Price IDs (`price_xxx`) into `Plan.StripePriceId` via a migration seed.
+4. Add a webhook endpoint in Dashboard → Developers → Webhooks pointing to `/webhooks/stripe`. Copy the **Webhook Signing Secret**.
+5. Set env vars or config:
+   ```
+   STRIPE_SECRET_KEY=sk_test_...
+   STRIPE_WEBHOOK_SECRET=whsec_...
+   ```
+6. For local webhook testing, use the [Stripe CLI](https://stripe.com/docs/stripe-cli):
+   ```bash
+   stripe listen --forward-to localhost:5000/webhooks/stripe
+   ```
 
 ---
 

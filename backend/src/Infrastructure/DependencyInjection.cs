@@ -67,6 +67,35 @@ public static class DependencyInjection
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddScoped<IAuditService, AuditService>();
 
+        // ── Billing ───────────────────────────────────────────────────────────
+        var stripeKey =
+            Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY")
+            ?? config["Stripe:SecretKey"];
+
+        if (!string.IsNullOrWhiteSpace(stripeKey))
+        {
+            // Real Stripe billing — keys are present
+            services.Configure<StripeSettings>(opts =>
+            {
+                config.GetSection(StripeSettings.SectionName).Bind(opts);
+                opts.SecretKey = stripeKey;
+
+                var webhookSecret = Environment.GetEnvironmentVariable("STRIPE_WEBHOOK_SECRET");
+                if (!string.IsNullOrWhiteSpace(webhookSecret))
+                    opts.WebhookSecret = webhookSecret;
+            });
+
+            services.AddSingleton<IStripeGateway, StripeGatewayAdapter>();
+            services.AddScoped<IBillingService, StripeBillingService>();
+        }
+        else
+        {
+            // No payment keys — use mock (dev / regions without Stripe access)
+            services.AddScoped<IBillingService, MockBillingService>();
+        }
+
+        services.AddScoped<IFeatureGate, FeatureGateService>();
+
         return services;
     }
 }

@@ -64,6 +64,31 @@ public class OrgsController : ControllerBase
         return Ok(members);
     }
 
+    /// <summary>Update organization name. Requires members.manage permission.</summary>
+    [HttpPut("{id:guid}")]
+    [Authorize(Policy = Permissions.MembersManage)]
+    [ProducesResponseType(typeof(OrgResponse), 200)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateOrgRequest request, CancellationToken ct)
+    {
+        var userId = HttpContext.GetUserId();
+        var org = await _orgService.UpdateAsync(id, userId, request, ct);
+        return Ok(org);
+    }
+
+    /// <summary>Get subscription info for the organization. Any member may view.</summary>
+    [HttpGet("{id:guid}/subscription")]
+    [ProducesResponseType(typeof(SubscriptionResponse), 200)]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> GetSubscription(Guid id, CancellationToken ct)
+    {
+        var userId = HttpContext.GetUserId();
+        var subscription = await _orgService.GetSubscriptionAsync(id, userId, ct);
+        if (subscription is null) return NoContent();
+        return Ok(subscription);
+    }
+
     /// <summary>Invite a user to the organization. Requires members.manage permission.</summary>
     [HttpPost("{id:guid}/invites")]
     [Authorize(Policy = Permissions.MembersManage)]

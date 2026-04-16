@@ -272,6 +272,55 @@ public class OrganizationService : IOrganizationService
             new { memberId = targetMemberId, userId = target.UserId }, ct);
     }
 
+    // ── Update org ────────────────────────────────────────────────────────────
+
+    public async Task<OrgResponse> UpdateAsync(Guid orgId, Guid requestingUserId, UpdateOrgRequest request, CancellationToken ct = default)
+    {
+        var isMember = await _db.OrganizationMembers
+            .AnyAsync(m => m.OrganizationId == orgId && m.UserId == requestingUserId, ct);
+
+        if (!isMember)
+            throw new AppException("Organization not found or access denied", 404);
+
+        var org = await _db.Organizations
+            .Include(o => o.Members)
+            .FirstOrDefaultAsync(o => o.Id == orgId, ct)
+            ?? throw new AppException("Organization not found", 404);
+
+        org.Name = request.Name.Trim();
+        await _db.SaveChangesAsync(ct);
+
+        await _audit.LogAsync(orgId, requestingUserId, "org.updated",
+            new { name = org.Name }, ct);
+
+        return new OrgResponse(org.Id, org.Name, org.Slug, org.CreatedAt, org.Members.Count);
+    }
+
+    // ── Get subscription ──────────────────────────────────────────────────────
+
+    public async Task<SubscriptionResponse?> GetSubscriptionAsync(Guid orgId, Guid requestingUserId, CancellationToken ct = default)
+    {
+        var isMember = await _db.OrganizationMembers
+            .AnyAsync(m => m.OrganizationId == orgId && m.UserId == requestingUserId, ct);
+
+        if (!isMember)
+            throw new AppException("Organization not found or access denied", 404);
+
+        var subscription = await _db.Subscriptions
+            .AsNoTracking()
+            .Include(s => s.Plan)
+            .FirstOrDefaultAsync(s => s.OrganizationId == orgId, ct);
+
+        if (subscription is null) return null;
+
+        return new SubscriptionResponse(
+            subscription.Plan.Name,
+            subscription.Status.ToString(),
+            subscription.CurrentPeriodEnd,
+            subscription.StripeCustomerId
+        );
+    }
+
     // ── helpers ───────────────────────────────────────────────────────────────
 
     private async Task<string> GenerateUniqueSlugAsync(string name, CancellationToken ct)

@@ -2,34 +2,66 @@
 .env
 .env.local
 .env.*.local
+!.env.example
 
-# ── .NET / Backend ─────────────────────────────────────────────────────────────
-backend/bin/
-backend/obj/
-backend/**/.vs/
-backend/*.user
+# ── .NET build output (any depth) ─────────────────────────────────────────────
+**/bin/
+**/obj/
+
+# ── Visual Studio ──────────────────────────────────────────────────────────────
+**/.vs/
+*.user
 *.suo
+*.userosscache
+*.sln.docstates
 *.ntvs*
 *.njsproj
-*.sln.docstates
 
-# ── Node / Frontend ────────────────────────────────────────────────────────────
-frontend/node_modules/
-frontend/.next/
-frontend/out/
-frontend/build/
-frontend/.cache/
-frontend/dist/
+# ── NuGet ─────────────────────────────────────────────────────────────────────
+*.nupkg
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+# ── Node / Next.js ─────────────────────────────────────────────────────────────
+node_modules/
+.next/
+out/
+build/
+.cache/
+dist/
+.pnpm-store/
+.turbo/
+.vercel/
+
+# ── TypeScript ─────────────────────────────────────────────────────────────────
+*.tsbuildinfo
+.eslintcache
+
+# ── Test output ────────────────────────────────────────────────────────────────
+coverage/
+TestResults/
 
 # ── Docker ────────────────────────────────────────────────────────────────────
 docker/nginx/certs/
 
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 # ── OS ────────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # ── IDE ───────────────────────────────────────────────────────────────────────
 .vscode/
 .idea/
 *.swp
 *.swo
+*.bak
+
+# ── Stripe CLI ────────────────────────────────────────────────────────────────
+.stripe/
