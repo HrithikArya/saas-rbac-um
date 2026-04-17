@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import type { MemberResponse, MemberRole } from '@/types/api';
+import { toast } from '@/hooks/useToast';
 
 const roleBadgeVariant: Record<MemberRole, 'default' | 'secondary' | 'outline'> = {
   Owner: 'default',
@@ -40,6 +41,7 @@ export function MembersTable() {
     try {
       await api.patch(`/members/${member.id}/role`, { role });
       await queryClient.invalidateQueries({ queryKey: ['members', currentOrgId] });
+      toast({ title: 'Role updated', description: `${member.email} is now ${role}.` });
     } finally {
       setUpdatingId(null);
     }
@@ -52,6 +54,7 @@ export function MembersTable() {
     try {
       await api.delete(`/members/${member.id}`);
       await queryClient.invalidateQueries({ queryKey: ['members', currentOrgId] });
+      toast({ title: 'Member removed', description: `${member.email} has been removed.` });
     } finally {
       setRemovingId(null);
     }

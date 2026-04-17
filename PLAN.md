@@ -84,7 +84,7 @@ Building a **production-ready multi-tenant SaaS boilerplate** using:
 
 ---
 
-## Phase 5 — Frontend 🔄 IN PROGRESS
+## Phase 5 — Frontend ✅
 
 **Goal**: Full Next.js 15 App Router frontend — auth flows, dashboard, settings, billing UI.
 
@@ -120,27 +120,28 @@ Building a **production-ready multi-tenant SaaS boilerplate** using:
 - [x] UI elements hidden/disabled by permission
 - [x] `X-Organization-Id` header automatically injected by API client
 
-### 5.6 — Remaining
-- [ ] Email verification flow (full round-trip test)
-- [ ] Password reset flow
-- [ ] Org creation dialog in sidebar
-- [ ] Toast notifications for all actions
-- [ ] Loading skeletons
+### 5.6 — Polish ✅
+- [x] `/reset-password` page — token from email link, confirm new password
+- [x] Org creation dialog — `<NewOrgDialog>` in sidebar OrgSwitcher
+- [x] Toast notifications — `useToast` + `<Toaster>` (Radix) wired into all actions
+- [x] `DialogFooter` export added to dialog.tsx
 
 ---
 
-## Phase 6 — Testing
+## Phase 6 — Testing 🔄 IN PROGRESS
 
 **Goal**: 70%+ coverage on critical paths.
 
-### 6.1 — Backend Integration Tests (requires Docker for Testcontainers)
-- [ ] Auth flow: Register → Login → Refresh → Logout
-- [ ] RBAC: Owner/Admin/Member/Viewer permission boundaries
-- [ ] Webhook: valid signature, invalid signature, duplicate event idempotency
+### 6.1 — Backend Integration Tests (requires Docker for Testcontainers) ✅
+- [x] Auth flow: Register → Login → Refresh → Logout + token rotation
+- [x] RBAC: Owner/Admin/Member/Viewer permission boundaries (orgs + members tests)
+- [x] Billing: checkout (mock), portal (mock), subscription info, org rename
+- [ ] Webhook: valid signature, invalid signature (needs Stripe test keys)
 
-### 6.2 — Frontend Tests
-- [ ] Unit tests for permission hooks (Vitest)
-- [ ] Auth form integration tests (React Testing Library)
+### 6.2 — Frontend Tests 🔄 IN PROGRESS
+- [x] Vitest + React Testing Library setup (`vitest.config.ts`, `src/test/setup.ts`)
+- [x] `usePermission` hook unit tests — all 4 roles, 6 test cases
+- [ ] Auth form integration tests (login/register flow with mocked API)
 
 ---
 

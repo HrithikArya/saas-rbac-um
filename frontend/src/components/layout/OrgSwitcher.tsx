@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { NewOrgDialog } from './NewOrgDialog';
 
 export function OrgSwitcher() {
   const { orgs, currentOrg, setCurrentOrg } = useOrgStore();
@@ -41,10 +42,12 @@ export function OrgSwitcher() {
           </DropdownMenuItem>
         ))}
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="gap-2 text-muted-foreground">
-          <Plus className="h-4 w-4" />
-          New organization
-        </DropdownMenuItem>
+        <NewOrgDialog>
+          <DropdownMenuItem className="gap-2 text-muted-foreground" onSelect={(e) => e.preventDefault()}>
+            <Plus className="h-4 w-4" />
+            New organization
+          </DropdownMenuItem>
+        </NewOrgDialog>
       </DropdownMenuContent>
     </DropdownMenu>
   );
