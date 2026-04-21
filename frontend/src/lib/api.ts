@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000';
+// All browser requests go through the Next.js /api proxy (next.config.ts rewrites
+// /api/* → NEXT_PUBLIC_API_URL/*). This avoids CORS entirely.
+const API_BASE = '/api';
+
+// Used by the token refresh call inside the response interceptor, which runs
+// in the browser and must also go through the proxy.
+const API_URL = API_BASE;
 
 // ── In-memory state (module-level, survives re-renders) ───────────────────────
 
@@ -14,7 +20,7 @@ export const setApiOrgId = (orgId: string | null) => { _currentOrgId = orgId; };
 // ── Axios instance ────────────────────────────────────────────────────────────
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE,
   headers: { 'Content-Type': 'application/json' },
 });
 
