@@ -44,12 +44,20 @@ const drainQueue = (err: unknown, token: string | null) => {
   _queue = [];
 };
 
+// Auth endpoints handle their own errors — never try to refresh on these paths.
+const AUTH_PATHS = ['/auth/login', '/auth/register', '/auth/refresh'];
+
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const original = error.config;
+    const url: string = original?.url ?? '';
 
-    if (error.response?.status !== 401 || original._retry) {
+    if (
+      error.response?.status !== 401 ||
+      original._retry ||
+      AUTH_PATHS.some((p) => url.includes(p))
+    ) {
       return Promise.reject(error);
     }
 
