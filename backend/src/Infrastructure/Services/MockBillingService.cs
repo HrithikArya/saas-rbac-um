@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services;
@@ -11,8 +12,13 @@ namespace Infrastructure.Services;
 public class MockBillingService : IBillingService
 {
     private readonly ILogger<MockBillingService> _logger;
+    private readonly string _appUrl;
 
-    public MockBillingService(ILogger<MockBillingService> logger) => _logger = logger;
+    public MockBillingService(ILogger<MockBillingService> logger, IConfiguration config)
+    {
+        _logger = logger;
+        _appUrl = config["App:Url"] ?? "http://localhost:3300";
+    }
 
     public Task<string> CreateCheckoutSessionAsync(
         Guid orgId, Guid userId, string priceId, CancellationToken ct = default)
@@ -22,8 +28,7 @@ public class MockBillingService : IBillingService
             "No real Stripe session created. Set Stripe:SecretKey to use real billing.",
             orgId, priceId);
 
-        // Returns a local page you can handle in the frontend dev environment
-        return Task.FromResult($"http://localhost:3000/dev/billing-mock?action=checkout&priceId={priceId}&orgId={orgId}");
+        return Task.FromResult($"{_appUrl}/dev/billing-mock?action=checkout&priceId={priceId}&orgId={orgId}");
     }
 
     public Task<string> CreatePortalSessionAsync(Guid orgId, CancellationToken ct = default)
@@ -33,7 +38,7 @@ public class MockBillingService : IBillingService
             "No real Stripe portal created.",
             orgId);
 
-        return Task.FromResult($"http://localhost:3000/dev/billing-mock?action=portal&orgId={orgId}");
+        return Task.FromResult($"{_appUrl}/dev/billing-mock?action=portal&orgId={orgId}");
     }
 
     public Task HandleWebhookAsync(string payload, string signature, CancellationToken ct = default)
