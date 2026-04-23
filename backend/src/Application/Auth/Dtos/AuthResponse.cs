@@ -10,5 +10,6 @@ public record AuthResponse(
 public record UserDto(
     Guid Id,
     string Email,
-    bool EmailVerified
+    bool EmailVerified,
+    bool IsSuperAdmin = false
 );

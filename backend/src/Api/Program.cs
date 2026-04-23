@@ -3,6 +3,8 @@ using Api.Middleware;
 using Api.Policies;
 using Application;
 using Application.Common.Constants;
+using Application.Common.Interfaces;
+using Domain.Entities;
 using Infrastructure;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -107,6 +109,11 @@ builder.Services.AddAuthorization(options =>
                 .RequireAuthenticatedUser()
                 .AddRequirements(new PermissionRequirement(permission)));
     }
+
+    options.AddPolicy("SuperAdmin", policy =>
+        policy
+            .RequireAuthenticatedUser()
+            .RequireClaim("is_super_admin", "true"));
 });
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
@@ -149,12 +156,42 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health");
 
-// ── Auto-migrate in development ───────────────────────────────────────────────
+// ── Auto-migrate + seed super admin ──────────────────────────────────────────
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await db.Database.MigrateAsync();
+
+    // Seed super admin from config if not yet created
+    var saEmail = app.Configuration["SuperAdmin:Email"];
+    var saPassword = app.Configuration["SuperAdmin:Password"];
+    if (!string.IsNullOrWhiteSpace(saEmail) && !string.IsNullOrWhiteSpace(saPassword))
+    {
+        var email = saEmail.ToLowerInvariant().Trim();
+        var existing = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+        if (existing is null)
+        {
+            var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
+            db.Users.Add(new User
+            {
+                Id = Guid.NewGuid(),
+                Email = email,
+                PasswordHash = hasher.Hash(saPassword),
+                EmailVerified = true,
+                IsSuperAdmin = true,
+                CreatedAt = DateTime.UtcNow
+            });
+            await db.SaveChangesAsync();
+            Log.Information("Super admin created: {Email}", email);
+        }
+        else if (!existing.IsSuperAdmin)
+        {
+            existing.IsSuperAdmin = true;
+            await db.SaveChangesAsync();
+            Log.Information("Existing user promoted to super admin: {Email}", email);
+        }
+    }
 }
 
 await app.RunAsync();

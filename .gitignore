@@ -4,6 +4,11 @@
 .env.*.local
 !.env.example
 
+# ── ASP.NET secrets (contain API keys — never commit) ─────────────────────────
+appsettings.Development.json
+appsettings.*.json
+!appsettings.json
+
 # ── .NET build output (any depth) ─────────────────────────────────────────────
 **/bin/
 **/obj/
@@ -65,3 +70,5 @@ desktop.ini
 
 # ── Stripe CLI ────────────────────────────────────────────────────────────────
 .stripe/
+# Added by code-review-graph
+.code-review-graph/

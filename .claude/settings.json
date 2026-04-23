@@ -1,0 +1,77 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(taskkill /PID 29008 /F)",
+      "Bash(taskkill /IM \"Api.exe\" /F)",
+      "Bash(cmd /c \"taskkill /PID 29008 /F\")",
+      "Bash(cmd /c \"taskkill /IM Api.exe /F\")",
+      "Bash(cmd /c \"tasklist | findstr dotnet\")",
+      "Bash(cmd /c \"taskkill /F /PID 29008 2>&1 && echo killed\")",
+      "Bash(cmd /c \"wmic process where \\\\\"ProcessId=29008\\\\\" get ProcessId,Name,CommandLine 2>&1\")",
+      "Bash(cmd /c \"netstat -ano | findstr :49841\")",
+      "Bash(powershell -Command \"Stop-Process -Id 29008 -Force -ErrorAction SilentlyContinue; Get-Process -Name 'Api' -ErrorAction SilentlyContinue | Stop-Process -Force; Write-Host 'done'\")",
+      "Bash(powershell -Command \"Get-Process -Name 'Api','dotnet' -ErrorAction SilentlyContinue | Select-Object Id,Name,CommandLine\")",
+      "Bash(powershell -Command 'Get-Process dotnet | Where-Object { $_.MainWindowTitle -eq '\\\\'''\\\\'' } | ForEach-Object { Write-Host \"PID: $\\($_.Id\\) CPU: $\\($_.CPU\\)\" }')",
+      "Bash(powershell -Command \"Get-NetTCPConnection -LocalPort 49841 -ErrorAction SilentlyContinue | Select-Object LocalPort,OwningProcess\")",
+      "Bash(powershell -Command \"Stop-Process -Id 11224,31488,40656,47880 -Force -ErrorAction SilentlyContinue; Write-Host 'All dotnet stopped'\")",
+      "Bash(powershell -Command \"Get-Process dotnet,Api -ErrorAction SilentlyContinue | Measure-Object | Select-Object Count\")",
+      "Bash(curl -s -X POST http://localhost:49841/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"test@test.com\",\"password\":\"Password123!\"}' -w '\\\\nHTTP_STATUS:%{http_code}')",
+      "Bash(curl -s -X POST http://localhost:3300/api/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"test@test.com\",\"password\":\"Password123!\"}' -w '\\\\nHTTP_STATUS:%{http_code}')",
+      "Bash(curl -s http://localhost:5000/health -w \"\\\\nHTTP_STATUS:%{http_code}\")",
+      "Bash(powershell -Command \"Get-Process dotnet,Api -ErrorAction SilentlyContinue | Stop-Process -Force\")",
+      "Bash(curl -s -X POST http://localhost:49841/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"hrithik@arya.com\",\"password\":\"Password123!\"}')",
+      "Bash(curl -s -X POST http://localhost:49841/auth/register -H 'Content-Type: application/json' -d '{\"email\":\"test2@test.com\",\"password\":\"Password123!\"}')",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('token:', d.get\\('accessToken',''\\)[:30]\\)\")",
+      "Bash(curl -s -X POST http://localhost:49841/auth/register -H 'Content-Type: application/json' -d '{\"email\":\"test3@test.com\",\"password\":\"Password123!\"}')",
+      "Bash(curl -s -X POST http://localhost:49841/orgs -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImU3YTUwOGM3LTNjMzMtNDMxMi1iZTY3LWRmYjVmNGQ4OGExYiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InRlc3QzQHRlc3QuY29tIiwianRpIjoiMTM4NzRhMmEtNTRlZS00ODQ4LTg2YzEtNTk4MzBkOWUyM2QyIiwiaWF0IjoxNzc2ODM3OTAyLCJleHAiOjE3NzY4Mzg4MDIsImlzcyI6InNhYXMtYXBpIiwiYXVkIjoic2Fhcy1jbGllbnQifQ.kfNJ5Q36n0bY9vd84cfbn-ZZU9n7-XKsOSFTYg9THiQ' -H 'Content-Type: application/json' -d '{\"name\":\"Test Org\"}')",
+      "Bash(curl -s http://localhost:49841/orgs/3305ab86-c345-447a-a1a0-7c1f66809d72/members -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImU3YTUwOGM3LTNjMzMtNDMxMi1iZTY3LWRmYjVmNGQ4OGExYiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InRlc3QzQHRlc3QuY29tIiwianRpIjoiMTM4NzRhMmEtNTRlZS00ODQ4LTg2YzEtNTk4MzBkOWUyM2QyIiwiaWF0IjoxNzc2ODM3OTAyLCJleHAiOjE3NzY4Mzg4MDIsImlzcyI6InNhYXMtYXBpIiwiYXVkIjoic2Fhcy1jbGllbnQifQ.kfNJ5Q36n0bY9vd84cfbn-ZZU9n7-XKsOSFTYg9THiQ')",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(taskkill /PID 65128 /F)",
+      "Bash(tasklist)",
+      "Bash(taskkill /PID 30260 /F)",
+      "Bash(cmd /c \"taskkill /PID 65128 /F & taskkill /PID 30260 /F\")",
+      "Bash(cmd /c \"tasklist | findstr /i api.exe\")",
+      "Bash(dotnet ef *)",
+      "Bash(dotnet tool *)",
+      "Bash(cmd /c \"dotnet tool install --global dotnet-ef --ignore-failed-sources 2>&1\")",
+      "Bash(cmd /c \"dotnet ef --version 2>&1\")",
+      "Bash(cmd /c \"where dotnet-ef 2>&1 & dotnet ef --version 2>&1\")",
+      "Bash(cmd /c \"dotnet tool list -g 2>&1\")",
+      "Bash(powershell -Command \"dotnet tool list -g\")",
+      "Bash(powershell -Command \"dotnet tool install --global dotnet-ef --add-source https://api.nuget.org/v3/index.json 2>&1\")",
+      "Bash(powershell -Command \"dotnet tool install --global dotnet-ef --configfile 'c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\nuget.config' 2>&1\")",
+      "Bash(powershell -Command \"cd 'c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Api'; dotnet ef migrations add AddSuperAdminAndPayments --project ..\\\\Infrastructure --startup-project . 2>&1\")",
+      "Bash(powershell -Command \"cd 'c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Api'; dotnet build 2>&1 | Select-Object -Last 30\")",
+      "Bash(powershell -Command \"Stop-Process -Id 48472 -Force -ErrorAction SilentlyContinue; Stop-Process -Name 'Api' -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2; cd 'c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Api'; dotnet ef migrations add AddSuperAdminAndPayments --project ..\\\\Infrastructure --startup-project . 2>&1\")",
+      "Bash(powershell -Command \"Select-String -Path 'c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Domain\\\\*\\\\*.cs' -Pattern 'enum SubscriptionStatus|enum OrgRole' | Select-Object Filename, Line\")",
+      "Bash(powershell -Command \"cd 'c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Api'; dotnet build --no-incremental 2>&1 | Select-Object -Last 20\")"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "code-review-graph update --skip-flows",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "code-review-graph status",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

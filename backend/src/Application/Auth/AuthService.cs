@@ -151,7 +151,7 @@ public class AuthService : IAuthService
 
     private async Task<AuthResponse> IssueTokensAsync(User user, CancellationToken ct)
     {
-        var accessToken = _tokenService.GenerateAccessToken(user.Id, user.Email);
+        var accessToken = _tokenService.GenerateAccessToken(user.Id, user.Email, user.IsSuperAdmin);
         var refreshToken = _tokenService.GenerateRefreshToken();
 
         await _tokenStore.SetAsync(
@@ -164,7 +164,7 @@ public class AuthService : IAuthService
             AccessToken: accessToken,
             RefreshToken: refreshToken,
             ExpiresAt: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
-            User: new UserDto(user.Id, user.Email, user.EmailVerified)
+            User: new UserDto(user.Id, user.Email, user.EmailVerified, user.IsSuperAdmin)
         );
     }
 }

@@ -12,6 +12,7 @@ public interface IAppDbContext
     DbSet<Plan> Plans { get; }
     DbSet<Subscription> Subscriptions { get; }
     DbSet<AuditEvent> AuditEvents { get; }
+    DbSet<Payment> Payments { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

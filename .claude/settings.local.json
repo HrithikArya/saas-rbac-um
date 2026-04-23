@@ -7,7 +7,12 @@
       "Bash(npx tsc *)",
       "Bash(node_modules/.bin/tsc --noEmit)",
       "Bash(npm install *)",
-      "Bash(node node_modules/typescript/bin/tsc --noEmit)"
+      "Bash(node node_modules/typescript/bin/tsc --noEmit)",
+      "Bash(dotnet run *)",
+      "Bash(echo \"Backend started in background with PID $!\")",
+      "Bash(curl -s http://localhost:49841/health)",
+      "Bash(curl -s http://localhost:49841/swagger/index.html)",
+      "Bash(npm run *)"
     ]
   }
 }

@@ -1,5 +1,6 @@
 using Application.Auth;
 using Application.Organizations;
+using Application.SuperAdmin;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
@@ -10,6 +11,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IOrganizationService, OrganizationService>();
+        services.AddScoped<ISuperAdminService, SuperAdminService>();
         return services;
     }
 }
