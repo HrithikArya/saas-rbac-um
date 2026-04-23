@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import api from '@/lib/api';
+import api, { setAccessToken } from '@/lib/api';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,6 +25,20 @@ export default function BillingMockPage() {
   const [paying, setPaying] = useState(false);
   const [paid, setPaid] = useState(false);
   const [error, setError] = useState('');
+  const [ready, setReady] = useState(false);
+
+  // Restore access token after full-page redirect
+  useEffect(() => {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) { setReady(true); return; }
+    axios.post('/api/auth/refresh', { refreshToken })
+      .then(({ data }) => {
+        setAccessToken(data.accessToken);
+        localStorage.setItem('refreshToken', data.refreshToken);
+      })
+      .catch(() => {})
+      .finally(() => setReady(true));
+  }, []);
 
   const isCheckout = action === 'checkout';
   const plan = PLAN_LABELS[priceId];
@@ -33,7 +47,8 @@ export default function BillingMockPage() {
     setError('');
     setPaying(true);
     try {
-      await api.post('/billing/mock-confirm', { priceId });
+      // orgId from URL params so the endpoint works without X-Organization-Id header
+      await api.post('/billing/mock-confirm', { priceId, orgId });
       setPaid(true);
     } catch (err) {
       if (axios.isAxiosError(err)) setError(err.response?.data?.error ?? 'Payment failed');
@@ -110,7 +125,7 @@ export default function BillingMockPage() {
               <Button variant="outline" className="flex-1" onClick={() => router.push('/settings/billing')}>
                 Cancel
               </Button>
-              <Button className="flex-1" onClick={handlePay} disabled={paying || !priceId}>
+              <Button className="flex-1" onClick={handlePay} disabled={paying || !priceId || !ready}>
                 <CreditCard className="h-4 w-4 mr-2" />
                 {paying ? 'Processing…' : 'Pay Now (Mock)'}
               </Button>

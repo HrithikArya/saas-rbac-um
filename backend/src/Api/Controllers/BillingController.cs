@@ -54,15 +54,14 @@ public class BillingController : ControllerBase
 
     /// <summary>
     /// Confirms a mock payment — activates the subscription without Stripe.
-    /// Only works when MockBillingService is active (no STRIPE_SECRET_KEY set).
+    /// Dev-only: works when no STRIPE_SECRET_KEY is configured.
+    /// Accepts orgId in the body so it works after a full-page redirect.
     /// </summary>
     [HttpPost("/billing/mock-confirm")]
-    [Authorize(Policy = Permissions.BillingManage)]
+    [Authorize]
     public async Task<IActionResult> MockConfirm([FromBody] MockConfirmRequest request, CancellationToken ct)
     {
-        var orgId = HttpContext.GetOrganizationId();
-        var fullRequest = request with { OrgId = orgId };
-        var payment = await _superAdmin.ConfirmMockPaymentAsync(fullRequest, ct);
+        var payment = await _superAdmin.ConfirmMockPaymentAsync(request, ct);
         return Ok(payment);
     }
 }
