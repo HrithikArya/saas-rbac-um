@@ -45,6 +45,6 @@ public record EarningsDto(
     IEnumerable<PaymentSummaryDto> RecentPayments
 );
 
-public record CreateOrgRequest(string OrgName, string OwnerEmail);
+public record SuperAdminCreateOrgRequest(string OrgName, string OwnerEmail);
 
 public record MockConfirmRequest(Guid OrgId, string PriceId);

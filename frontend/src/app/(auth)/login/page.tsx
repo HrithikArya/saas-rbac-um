@@ -1,25 +1,38 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/auth.store';
 import { useOrgStore } from '@/stores/org.store';
+import { getSubdomain, getTenantUrl } from '@/lib/subdomain';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import api from '@/lib/api';
 import axios from 'axios';
+import type { OrgResponse } from '@/types/api';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [tenantOrg, setTenantOrg] = useState<OrgResponse | null>(null);
 
   const { login } = useAuthStore();
   const { fetchOrgs } = useOrgStore();
   const router = useRouter();
+
+  // Fetch org info for tenant login branding (e.g. "Sign in to Acme Corp")
+  useEffect(() => {
+    const subdomain = getSubdomain();
+    if (!subdomain) return;
+    api.get<OrgResponse>(`/orgs/slug/${subdomain}`)
+      .then((res) => setTenantOrg(res.data))
+      .catch(() => {});
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +41,20 @@ export default function LoginPage() {
     try {
       await login(email, password);
       await fetchOrgs();
-      router.push('/dashboard');
+
+      const subdomain = getSubdomain();
+      const { orgs } = useOrgStore.getState();
+
+      if (subdomain) {
+        // Stay on this tenant's subdomain
+        router.push('/dashboard');
+      } else if (orgs.length === 1) {
+        // Single org — go straight to its subdomain
+        window.location.href = getTenantUrl(orgs[0].slug, '/dashboard');
+      } else {
+        // Multiple orgs (or zero) — let user pick
+        router.push('/select-tenant');
+      }
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.error ?? 'Invalid credentials');
@@ -43,8 +69,14 @@ export default function LoginPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Welcome back</CardTitle>
-        <CardDescription>Sign in to your account</CardDescription>
+        <CardTitle>
+          {tenantOrg ? `Sign in to ${tenantOrg.name}` : 'Welcome back'}
+        </CardTitle>
+        <CardDescription>
+          {tenantOrg
+            ? `Enter your credentials to access ${tenantOrg.name}`
+            : 'Sign in to your account'}
+        </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">

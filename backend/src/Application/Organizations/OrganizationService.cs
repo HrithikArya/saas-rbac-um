@@ -321,6 +321,20 @@ public class OrganizationService : IOrganizationService
         );
     }
 
+    // ── Get by slug (public — no auth required) ───────────────────────────────
+
+    public async Task<OrgResponse?> GetBySlugAsync(string slug, CancellationToken ct = default)
+    {
+        var org = await _db.Organizations
+            .AsNoTracking()
+            .Include(o => o.Members)
+            .FirstOrDefaultAsync(o => o.Slug == slug, ct);
+
+        if (org is null) return null;
+
+        return new OrgResponse(org.Id, org.Name, org.Slug, org.CreatedAt, org.Members.Count);
+    }
+
     // ── helpers ───────────────────────────────────────────────────────────────
 
     private async Task<string> GenerateUniqueSlugAsync(string name, CancellationToken ct)

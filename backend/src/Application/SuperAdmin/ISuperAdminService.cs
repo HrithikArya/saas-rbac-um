@@ -9,6 +9,6 @@ public interface ISuperAdminService
     Task<OrgDetailDto> GetOrgDetailAsync(Guid orgId, CancellationToken ct = default);
     Task ChangePlanAsync(Guid orgId, Guid planId, CancellationToken ct = default);
     Task<EarningsDto> GetEarningsAsync(CancellationToken ct = default);
-    Task<OrgSummaryDto> CreateOrgAsync(CreateOrgRequest request, CancellationToken ct = default);
+    Task<OrgSummaryDto> CreateOrgAsync(SuperAdminCreateOrgRequest request, CancellationToken ct = default);
     Task<PaymentSummaryDto> ConfirmMockPaymentAsync(MockConfirmRequest request, CancellationToken ct = default);
 }

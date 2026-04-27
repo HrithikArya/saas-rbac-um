@@ -136,7 +136,7 @@ public class SuperAdminService : ISuperAdminService
         return new EarningsDto(total, payments.Count, monthly, byOrg, recent);
     }
 
-    public async Task<OrgSummaryDto> CreateOrgAsync(CreateOrgRequest request, CancellationToken ct = default)
+    public async Task<OrgSummaryDto> CreateOrgAsync(SuperAdminCreateOrgRequest request, CancellationToken ct = default)
     {
         var owner = await _db.Users.FirstOrDefaultAsync(u => u.Email == request.OwnerEmail.ToLowerInvariant(), ct)
             ?? throw new AppException($"User '{request.OwnerEmail}' not found. They must register first.", 404);
