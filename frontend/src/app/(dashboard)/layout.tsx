@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth.store';
 import { useOrgStore } from '@/stores/org.store';
+import { getSubdomain, getTenantUrl } from '@/lib/subdomain';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Topbar } from '@/components/layout/Topbar';
 
@@ -13,12 +14,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
 
   useEffect(() => {
-    initialize().then(() => {
+    initialize().then(async () => {
       const { isAuthenticated: authed } = useAuthStore.getState();
       if (!authed) {
         router.push('/login');
-      } else {
-        fetchOrgs().catch(() => {});
+        return;
+      }
+
+      await fetchOrgs().catch(() => {});
+
+      // Root domain should not host the dashboard — redirect to the right place
+      const subdomain = getSubdomain();
+      if (!subdomain) {
+        const { orgs } = useOrgStore.getState();
+        if (orgs.length === 1) {
+          window.location.href = getTenantUrl(orgs[0].slug, '/dashboard');
+        } else if (orgs.length > 1) {
+          router.push('/select-tenant');
+        }
+        // orgs.length === 0: stay and show empty state / org creation
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
