@@ -53,7 +53,7 @@ export function InviteDialog({ children }: InviteDialogProps) {
       setRole('Member');
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.error ?? 'Failed to send invite');
+        setError(err.response?.data?.error ?? err.response?.data?.title ?? 'Failed to send invite');
       } else {
         setError('Something went wrong');
       }

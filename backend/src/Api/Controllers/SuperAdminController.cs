@@ -27,7 +27,7 @@ public class SuperAdminController : ControllerBase
         => Ok(await _service.GetOrgDetailAsync(id, ct));
 
     [HttpPost("orgs")]
-    public async Task<IActionResult> CreateOrg([FromBody] CreateOrgRequest request, CancellationToken ct)
+    public async Task<IActionResult> CreateOrg([FromBody] SuperAdminCreateOrgRequest request, CancellationToken ct)
     {
         var org = await _service.CreateOrgAsync(request, ct);
         return Created($"/superadmin/orgs/{org.Id}", org);

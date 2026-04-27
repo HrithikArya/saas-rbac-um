@@ -45,7 +45,11 @@
       "Bash(powershell -Command \"cd 'c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Api'; dotnet build 2>&1 | Select-Object -Last 30\")",
       "Bash(powershell -Command \"Stop-Process -Id 48472 -Force -ErrorAction SilentlyContinue; Stop-Process -Name 'Api' -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2; cd 'c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Api'; dotnet ef migrations add AddSuperAdminAndPayments --project ..\\\\Infrastructure --startup-project . 2>&1\")",
       "Bash(powershell -Command \"Select-String -Path 'c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Domain\\\\*\\\\*.cs' -Pattern 'enum SubscriptionStatus|enum OrgRole' | Select-Object Filename, Line\")",
-      "Bash(powershell -Command \"cd 'c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Api'; dotnet build --no-incremental 2>&1 | Select-Object -Last 20\")"
+      "Bash(powershell -Command \"cd 'c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Api'; dotnet build --no-incremental 2>&1 | Select-Object -Last 20\")",
+      "Bash(powershell -Command \"cd 'c:\\\\source\\\\Claude\\\\saas-rbac-um\\\\backend\\\\src\\\\Api'; dotnet build 2>&1 | Select-String 'Error|Warning|succeeded|failed' | Select-Object -Last 10\")",
+      "Bash(xargs grep *)",
+      "Bash(xargs cat *)",
+      "Bash(git checkout *)"
     ]
   },
   "hooks": {
