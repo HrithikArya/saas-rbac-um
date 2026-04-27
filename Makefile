@@ -1,12 +1,18 @@
-.PHONY: dev stop migrate seed test test-backend test-frontend lint build
+.PHONY: dev dev-local stop migrate seed test test-backend test-frontend lint build
 
-# ── Local Dev ──────────────────────────────────────────────────────────────────
+# ── Docker Dev (all services) ──────────────────────────────────────────────────
 dev:
 	@cp -n .env.example .env 2>/dev/null || true
 	docker compose up --build
 
 stop:
 	docker compose down
+
+# ── Local Dev (no Docker — requires local Postgres on localhost:5432) ──────────
+dev-local:
+	npx --yes concurrently -n backend,frontend -c cyan,magenta \
+		"dotnet run --project backend/src/Api" \
+		"npm --prefix frontend run dev"
 
 # ── Database ───────────────────────────────────────────────────────────────────
 migrate:
