@@ -14,4 +14,5 @@ public interface IOrganizationService
     Task RemoveMemberAsync(Guid orgId, Guid targetMemberId, Guid actorUserId, CancellationToken ct = default);
     Task<OrgResponse> UpdateAsync(Guid orgId, Guid requestingUserId, UpdateOrgRequest request, CancellationToken ct = default);
     Task<SubscriptionResponse?> GetSubscriptionAsync(Guid orgId, Guid requestingUserId, CancellationToken ct = default);
+    Task<OrgResponse?> GetBySlugAsync(string slug, CancellationToken ct = default);
 }

@@ -89,6 +89,18 @@ public class OrgsController : ControllerBase
         return Ok(subscription);
     }
 
+    /// <summary>Look up an organization by slug. Public — used for tenant login branding.</summary>
+    [HttpGet("slug/{slug}")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(OrgResponse), 200)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> GetBySlug(string slug, CancellationToken ct)
+    {
+        var org = await _orgService.GetBySlugAsync(slug, ct);
+        if (org is null) return NotFound();
+        return Ok(org);
+    }
+
     /// <summary>Invite a user to the organization. Requires members.manage permission.</summary>
     [HttpPost("{id:guid}/invites")]
     [Authorize(Policy = Permissions.MembersManage)]
