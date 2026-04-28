@@ -168,7 +168,7 @@ public class OrgsEndpointsTests : IntegrationTestBase
         var resp = await Client.GetAsync($"/orgs/{org!.Id}/members");
 
         resp.StatusCode.Should().Be(HttpStatusCode.OK);
-        var members = await resp.Content.ReadFromJsonAsync<List<MemberResponse>>();
+        var members = await resp.Content.ReadFromJsonAsync<List<MemberResponse>>(JsonOptions);
         members.Should().HaveCount(1);
         members![0].Role.Should().Be(Domain.Enums.MemberRole.Owner);
     }

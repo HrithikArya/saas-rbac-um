@@ -17,8 +17,8 @@ public static class DependencyInjection
     {
         // ── PostgreSQL / EF Core ───────────────────────────────────────────────
         var connectionString =
-            Environment.GetEnvironmentVariable("DATABASE_URL")
-            ?? config.GetConnectionString("DefaultConnection")
+            config.GetConnectionString("DefaultConnection")
+            ?? Environment.GetEnvironmentVariable("DATABASE_URL")
             ?? throw new InvalidOperationException("Database connection string not configured");
 
         services.AddDbContext<AppDbContext>(options =>
@@ -29,8 +29,8 @@ public static class DependencyInjection
 
         // ── Token store: Redis if configured, otherwise in-memory ────────────
         var redisUrl =
-            Environment.GetEnvironmentVariable("REDIS_URL")
-            ?? config.GetConnectionString("Redis");
+            config.GetConnectionString("Redis")
+            ?? Environment.GetEnvironmentVariable("REDIS_URL");
 
         if (!string.IsNullOrWhiteSpace(redisUrl))
         {
@@ -46,8 +46,8 @@ public static class DependencyInjection
 
         // ── JWT settings ──────────────────────────────────────────────────────
         var jwtSecret =
-            Environment.GetEnvironmentVariable("JWT_SECRET")
-            ?? config["Jwt:Secret"]
+            config["Jwt:Secret"]
+            ?? Environment.GetEnvironmentVariable("JWT_SECRET")
             ?? throw new InvalidOperationException("JWT_SECRET not configured");
 
         // Bind remaining settings from config, override secret from env
