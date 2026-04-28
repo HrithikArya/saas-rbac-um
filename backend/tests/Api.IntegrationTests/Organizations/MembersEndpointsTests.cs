@@ -54,7 +54,7 @@ public class MembersEndpointsTests : IntegrationTestBase
         // so we directly test the endpoint for the admin membership added manually via service)
         // For this test, verify the PATCH endpoint correctly requires org context + permission
         var membersResp = await Client.GetAsync($"/orgs/{org.Id}/members");
-        var members = await membersResp.Content.ReadFromJsonAsync<List<MemberResponse>>();
+        var members = await membersResp.Content.ReadFromJsonAsync<List<MemberResponse>>(JsonOptions);
         var ownerMemberId = members!.First(m => m.Role == MemberRole.Owner).Id;
 
         // Owner attempts to change their own role → should fail (can't demote owner)
@@ -91,7 +91,7 @@ public class MembersEndpointsTests : IntegrationTestBase
 
         Auth(ownerToken, org.Id);
         var membersResp = await Client.GetAsync($"/orgs/{org.Id}/members");
-        var members = await membersResp.Content.ReadFromJsonAsync<List<MemberResponse>>();
+        var members = await membersResp.Content.ReadFromJsonAsync<List<MemberResponse>>(JsonOptions);
         var ownerMemberId = members!.First(m => m.Role == MemberRole.Owner).Id;
 
         var resp = await Client.DeleteAsync($"/members/{ownerMemberId}");

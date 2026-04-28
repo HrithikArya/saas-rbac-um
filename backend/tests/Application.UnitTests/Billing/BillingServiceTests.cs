@@ -35,13 +35,18 @@ public class BillingServiceTests
 
         db.Organizations.Add(new Organization
         {
-            Id = orgId, Name = "Test Org", Slug = "test-org",
-            OwnerId = userId, CreatedAt = DateTime.UtcNow
+            Id = orgId,
+            Name = "Test Org",
+            Slug = "test-org",
+            OwnerId = userId,
+            CreatedAt = DateTime.UtcNow
         });
         db.Users.Add(new User
         {
-            Id = userId, Email = "owner@test.com",
-            PasswordHash = "hash", CreatedAt = DateTime.UtcNow
+            Id = userId,
+            Email = "owner@test.com",
+            PasswordHash = "hash",
+            CreatedAt = DateTime.UtcNow
         });
         db.Plans.Add(new Plan { Id = Guid.NewGuid(), Name = "Free", FeaturesJson = "{}" });
         await db.SaveChangesAsync();
@@ -72,21 +77,29 @@ public class BillingServiceTests
 
         db.Organizations.Add(new Organization
         {
-            Id = orgId, Name = "Test Org", Slug = "test-org",
-            OwnerId = userId, CreatedAt = DateTime.UtcNow
+            Id = orgId,
+            Name = "Test Org",
+            Slug = "test-org",
+            OwnerId = userId,
+            CreatedAt = DateTime.UtcNow
         });
         db.Users.Add(new User
         {
-            Id = userId, Email = "owner@test.com",
-            PasswordHash = "hash", CreatedAt = DateTime.UtcNow
+            Id = userId,
+            Email = "owner@test.com",
+            PasswordHash = "hash",
+            CreatedAt = DateTime.UtcNow
         });
         db.Plans.Add(new Plan { Id = planId, Name = "Free", FeaturesJson = "{}" });
         db.Subscriptions.Add(new Subscription
         {
-            Id = Guid.NewGuid(), OrganizationId = orgId, PlanId = planId,
+            Id = Guid.NewGuid(),
+            OrganizationId = orgId,
+            PlanId = planId,
             Status = SubscriptionStatus.Active,
             StripeCustomerId = "cus_existing",
-            CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         });
         await db.SaveChangesAsync();
 
@@ -126,10 +139,13 @@ public class BillingServiceTests
         db.Plans.Add(new Plan { Id = planId, Name = "Pro", FeaturesJson = "{}" });
         db.Subscriptions.Add(new Subscription
         {
-            Id = Guid.NewGuid(), OrganizationId = orgId, PlanId = planId,
+            Id = Guid.NewGuid(),
+            OrganizationId = orgId,
+            PlanId = planId,
             Status = SubscriptionStatus.Active,
             StripeCustomerId = "cus_portal_test",
-            CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         });
         await db.SaveChangesAsync();
 
@@ -163,10 +179,13 @@ public class BillingServiceTests
         db.Plans.Add(new Plan { Id = planId, Name = "Free", FeaturesJson = "{}" });
         db.Subscriptions.Add(new Subscription
         {
-            Id = Guid.NewGuid(), OrganizationId = orgId, PlanId = planId,
+            Id = Guid.NewGuid(),
+            OrganizationId = orgId,
+            PlanId = planId,
             Status = SubscriptionStatus.Incomplete,
             StripeCustomerId = null,
-            CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         });
         await db.SaveChangesAsync();
 
@@ -188,10 +207,13 @@ public class BillingServiceTests
         db.Plans.Add(new Plan { Id = planId, Name = "Free", FeaturesJson = "{}" });
         db.Subscriptions.Add(new Subscription
         {
-            Id = Guid.NewGuid(), OrganizationId = orgId, PlanId = planId,
+            Id = Guid.NewGuid(),
+            OrganizationId = orgId,
+            PlanId = planId,
             Status = SubscriptionStatus.Incomplete,
             StripeCustomerId = "cus_abc",
-            CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         });
         await db.SaveChangesAsync();
 
@@ -221,10 +243,13 @@ public class BillingServiceTests
         db.Plans.Add(new Plan { Id = planId, Name = "Pro", FeaturesJson = "{}" });
         db.Subscriptions.Add(new Subscription
         {
-            Id = Guid.NewGuid(), OrganizationId = orgId, PlanId = planId,
+            Id = Guid.NewGuid(),
+            OrganizationId = orgId,
+            PlanId = planId,
             Status = SubscriptionStatus.Active,
             StripeSubscriptionId = "sub_abc",
-            CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         });
         await db.SaveChangesAsync();
 
@@ -253,10 +278,13 @@ public class BillingServiceTests
         db.Plans.Add(new Plan { Id = planId, Name = "Pro", FeaturesJson = "{}" });
         db.Subscriptions.Add(new Subscription
         {
-            Id = Guid.NewGuid(), OrganizationId = orgId, PlanId = planId,
+            Id = Guid.NewGuid(),
+            OrganizationId = orgId,
+            PlanId = planId,
             Status = SubscriptionStatus.Active,
             StripeSubscriptionId = "sub_fail",
-            CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         });
         await db.SaveChangesAsync();
 

@@ -8,7 +8,7 @@ COPY src/Application/Application.csproj src/Application/
 COPY src/Domain/Domain.csproj src/Domain/
 COPY src/Infrastructure/Infrastructure.csproj src/Infrastructure/
 
-RUN dotnet restore
+RUN dotnet restore src/Api/Api.csproj
 
 COPY . .
 RUN dotnet publish src/Api/Api.csproj -c Release -o /app/publish --no-restore
@@ -34,5 +34,5 @@ USER appuser
 
 COPY --from=build /app/publish .
 
-EXPOSE 5000
-ENTRYPOINT ["dotnet", "Api.dll"]
+EXPOSE 8080
+CMD ["sh", "-c", "dotnet Api.dll --urls http://+:${PORT:-8080}"]

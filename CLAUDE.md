@@ -1,3 +1,23 @@
+## Git Workflow
+
+**IMPORTANT: Never commit directly to `main`. All changes must go through a branch + pull request.**
+
+### Rules
+- Always create a new branch before making any changes: `git checkout -b feature/<description>` or `fix/<description>`
+- Commit changes to the branch, then push and open a PR against `main`
+- Branch naming: `feature/`, `fix/`, `docs/`, `chore/` prefix based on change type
+- One logical change per branch — don't bundle unrelated work
+
+### Standard flow
+```bash
+git checkout -b feature/my-change
+# make changes, commit
+git push -u origin feature/my-change
+# then open PR on GitHub
+```
+
+---
+
 <!-- code-review-graph MCP tools -->
 ## MCP Tools: code-review-graph
 
