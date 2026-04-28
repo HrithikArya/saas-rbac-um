@@ -143,11 +143,11 @@ public class StripeBillingService : IBillingService
 
         sub.Status = evt.SubscriptionStatus switch
         {
-            "active"     => SubscriptionStatus.Active,
-            "trialing"   => SubscriptionStatus.Trialing,
-            "past_due"   => SubscriptionStatus.PastDue,
-            "canceled"   => SubscriptionStatus.Canceled,
-            _            => SubscriptionStatus.Incomplete
+            "active" => SubscriptionStatus.Active,
+            "trialing" => SubscriptionStatus.Trialing,
+            "past_due" => SubscriptionStatus.PastDue,
+            "canceled" => SubscriptionStatus.Canceled,
+            _ => SubscriptionStatus.Incomplete
         };
         sub.CurrentPeriodEnd = evt.SubscriptionPeriodEnd;
         sub.UpdatedAt = DateTime.UtcNow;
